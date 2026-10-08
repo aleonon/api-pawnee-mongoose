@@ -5,6 +5,8 @@
  * y el middleware centralizado de errores al final.
  */
 
+import cors from "cors";
+
 import express, { Express, Request, Response } from "express";
 import { requestId } from "./middlewares/requestId";
 import { logger } from "./middlewares/logger";
@@ -15,6 +17,19 @@ import { ApiError } from "./apiError";
 
 export function crearApp(): Express {
   const app = express();
+
+  const origenesPermitidos = [
+    "http://localhost:5173",
+    "https://app-render-zft7.onrender.com"
+  ];
+
+  app.use(cors({
+    origin: origenesPermitidos
+  }));
+
+  app.use(cors({
+    origin: process.env.FRONTEND_URL ?? "http://localhost:5173"
+  }));
 
   app.use(express.json());
   app.use(requestId);
